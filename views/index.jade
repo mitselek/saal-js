@@ -1,0 +1,350 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+        .row
+            if featured
+                section.event-banner.carousel.slide(id='front-carousel' data-ride='carousel')
+                    .carousel-inner(role='listbox')
+                        - var featureActive = 0
+                        each feature in featured
+                            - var carousel_url = op.get(feature, lang + '-name').includes('Baltoscandal') ? 'https://baltoscandal.ee' : ('/' + lang + '/performance/' + op.get(feature,'id'))
+
+                            .item(class=(featureActive++ === 0 ? 'active' : ''))
+                                a(href=carousel_url)
+                                    figure(id = 'slide-' + op.get(feature, 'id'), style='background-image: url(' + op.get(feature, ['photo', 'file'], '/images/placeholder.jpg') + ');')
+                                    header.col-md-8
+                                        if op.get(feature, lang + '-supertitle', '')
+                                            p= op.get(feature, lang + '-supertitle', '')
+                                        h1
+                                            if op.get(feature, 'artist', '')
+                                                span.artist= op.get(feature, 'artist', '')
+
+                                            if op.get(feature, 'producer', '')
+                                                span.producer= op.get(feature, 'producer', '')
+
+                                            if op.get(feature, lang + '-town', '')
+                                                span.town= op.get(feature, lang + '-town', '')
+
+                                        h1= op.get(feature, lang + '-name', '')
+
+                                        if op.get(feature, lang + '-subtitle', '')
+                                            p= op.get(feature, lang + '-subtitle', '')
+
+                                - categoryEIDs = SDC.get(['relationships', op.get(feature,'id'), 'category'], []).map(function(c){return Number(c)})
+                                    ul.event-categories
+                                        each category in SDC.get(['local_entities', 'by_class', 'rootCategory'])
+                                            li.text-uppercase.h3(class=(categoryEIDs.indexOf(op.get(category, ['id'])) > -1 ? "" : "unactive"))
+                                                span
+                                                    a(href='search?q=category:' + op.get(category, ['id']))= op.get(category, ['properties', lang+'-name', 0, 'value'])
+
+
+                    a.left.carousel-control(href='#front-carousel' role='button' data-slide='prev')
+                        span.icon-prev.arrow-left(aria-hidden='true')
+                        span.sr-only Previous
+                    a.right.carousel-control(href='#front-carousel' role='button' data-slide='next')
+                        span.icon-next.arrow-right(aria-hidden='true')
+                        span.sr-only Next
+
+                    //- Gradient Map for images
+                    each feature in featured
+                        script.
+                            var slide#{feature.id} = document.getElementById('slide-#{feature.id}');
+                            GradientMaps.applyGradientMap(slide#{feature.id}, '#{SAAL.secondary_color}, #{SAAL.main_color}');
+
+        .row.front-page-margin
+            section.col-xs-12.col-md-12.col-lg-9
+
+                - var listlength = 3
+                .programme.row
+                    .col-xs-12.col-md-12.col-lg-12
+                        h2= t('nav.schedule')
+
+                    if program
+                        each datestring in Object.keys(program).sort().slice(0, listlength)
+                            each timestring in Object.keys(op.get(program, [datestring])).sort()
+                                each p in op.get(program, [datestring, timestring])
+                                    .col-xs-12.col-sm-2.col-lg-2
+                                        p= (moment(datestring).locale(lang).format('dddd'))
+                                        p= (moment(datestring).locale(lang).format('L'))
+                                        if timestring != '23:59'
+                                            p= timestring
+
+                                        if op.get(p, 'canceled') === true
+                                            p.today= t('button.canceled')
+
+                                        //- Premiere
+                                        if op.get(p, 'performance.premiere.start-time')
+                                            if (moment(datestring).locale(lang).format('L') === moment(op.get(p, 'performance.premiere.start-time')).locale(lang).format('L'))
+                                                p.today= t('button.premiere')
+
+                                        //- Today
+                                        if (moment(datestring).format('M') + ' ' + moment(datestring).format('D')) == ((moment().month()+1) + ' ' + moment().date())
+                                            p.today= t('button.today')
+
+                                    .col-xs-12.col-md-6.col-lg-6
+                                        h3
+                                            //- Festival
+                                            //- if (op.get(p,['tag']).includes('festival'))
+                                            //-     span.subtitle= t('button.saalbiennaal')
+
+                                            if op.get(p, 'performance.id', false)
+                                                a(href='/' + lang + '/performance/' + op.get(p,'performance.id'))
+                                                    if op.get(p, lang + '-supertitle', '')
+                                                        span.subtitle= op.get(p, lang + '-supertitle', '')
+
+                                                    if op.get(p, 'performance.artist', '')
+                                                        span.artist= op.get(p, 'performance.artist', '')
+
+                                                    if op.get(p, 'performance.producer', '')
+                                                        span.producer= op.get(p, 'performance.producer', '')
+
+                                                    if op.get(p, ['performance', lang + '-town'], '')
+                                                        span.town= op.get(p, ['performance', lang + '-town'], '')
+
+                                                    span.name= op.get(p, lang + '-name')
+
+                                                    if op.get(p, lang + '-subtitle', '')
+                                                        span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                            else
+                                                a(href='/' + lang + '/event/' + op.get(p,'id'))= op.get(p, lang + '-name')
+                                                    if op.get(p, lang + '-supertitle', '')
+                                                        span.subtitle= op.get(p, lang + '-supertitle', '')
+
+                                                    if op.get(p, 'performance.artist', '')
+                                                        span.artist= op.get(p, 'performance.artist', '')
+
+                                                    if op.get(p, 'performance.producer', '')
+                                                        span.producer= op.get(p, 'performance.producer', '')
+
+                                                    if op.get(p, ['performance', lang + '-town'], '')
+                                                        span.town= op.get(p, ['performance', lang + '-town'], '')
+
+                                                    span.name= op.get(p, lang + '-name')
+
+                                                    if op.get(p, lang + '-subtitle', '')
+                                                        span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                    .col-xs-6.col-md-2.col-lg-2
+                                        if op.get(p, [lang + '-location'], false)
+                                            p.location= op.get(p, [lang + '-location'])
+
+                                        if op.get(p, ['saal-location', lang + '-name'])
+                                            p.location= op.get(p, ['saal-location', lang + '-name'])
+
+                                        if op.get(p, 'price') == 0
+                                            p= t('title.free')
+                                        else
+                                            p= op.get(p, 'price')
+
+                                        if op.get(p, 'min-price')
+                                            if op.get(p, 'min-price') == op.get(p, 'max-price')
+                                                p= op.get(p, 'min-price') + '€'
+                                            else
+                                                p= op.get(p, 'min-price') + '/' + op.get(p, 'max-price') + '€'
+
+                                        if op.get(p, 'onsite-price')
+                                            p= t('title.onsite-price') + ': ' + op.get(p, 'onsite-price') + '€'
+
+                                    if op.get(p, 'sales-status')
+                                        .col-xs-6.col-md-2.col-lg-2.text-right
+                                            if op.get(p, 'canceled') === true
+                                                a.btn.btn-primary(class="disabled")= t('button.canceled')
+                                            else
+                                                a.btn.btn-primary(class=((op.get(p, 'sales-status') === 'sold_out' || op.get(p, 'sales-status') === 'free_admission') ? "free disabled" : "") href=op.get(p, lang + '-ticket-api') target='_blank')= t('button.buy_ticket.' + op.get(p, 'sales-status'))
+
+                                    .col-xs-12.col-md-12.col-lg-12
+                                        hr
+
+                        if Object.keys(program).length > listlength
+                            .col-xs-12.col-md-12
+                                a.load-more.btn.btn-primary(href='/' + lang + '/program/')= t('button.view-all')
+
+                    else
+                        .col-lg-12
+                            h2= t('title.no-events')
+                if tours
+                    .tour.row
+                        .col-xs-12.col-md-12.col-lg-12
+                            h2= t('nav.tours')
+
+                        each datestring in Object.keys(tours).sort().slice(0, listlength)
+                            each timestring in Object.keys(op.get(tours, [datestring])).sort()
+                                each p in op.get(tours, [datestring, timestring])
+                                    if op.get(p, ['performance', lang + '-name'])
+                                        .col-xs-12.col-sm-2.col-lg-2
+                                            p= (moment(datestring).locale(lang).format('dddd'))
+                                            p= (moment(datestring).locale(lang).format('L'))
+                                            if timestring != '23:59'
+                                                p= timestring
+
+                                            if op.get(p, 'canceled') === true
+                                                p.today= t('button.canceled')
+
+                                            //- Premiere
+                                            if op.get(p, 'performance.premiere.start-time')
+                                                if (moment(datestring).locale(lang).format('L') === moment(op.get(p, 'performance.premiere.start-time')).locale(lang).format('L'))
+                                                    p.today= t('button.premiere')
+
+                                            //- Today
+                                            if (moment(datestring).format('M') + ' ' + moment(datestring).format('D')) == ((moment().month()+1) + ' ' + moment().date())
+                                                p.today= t('button.today')
+
+                                            //- Is SAAL Biennaal
+
+                                            //- Is Nu Performance Festival
+
+                                        .col-xs-12.col-md-6.col-lg-6
+                                            h3
+                                                if op.get(p, 'performance.id', false)
+                                                    a(href='/' + lang + '/performance/' + op.get(p,'performance.id'))
+                                                        if op.get(p, lang + '-supertitle', '')
+                                                            span.subtitle= op.get(p, lang + '-supertitle', '')
+
+                                                        if op.get(p, 'performance.artist', '')
+                                                            span.artist= op.get(p, 'performance.artist', '')
+
+                                                        if op.get(p, 'performance.producer', '')
+                                                            span.producer= op.get(p, 'performance.producer', '')
+
+                                                        if op.get(p, ['performance', lang + '-town'], '')
+                                                            span.town= op.get(p, ['performance', lang + '-town'], '')
+
+                                                        span.name= op.get(p, lang + '-name')
+
+                                                        if op.get(p, lang + '-subtitle', '')
+                                                            span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                                else
+                                                    a(href='/' + lang + '/event/' + op.get(p,'id'))= op.get(p, lang + '-name')
+                                                        if op.get(p, lang + '-subtitle', '')
+                                                            span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                                        if op.get(p, 'performance.artist', '')
+                                                            span.artist= op.get(p, 'performance.artist', '')
+
+                                                        if op.get(p, 'performance.producer', '')
+                                                            span.producer= op.get(p, 'performance.producer', '')
+
+                                                        if op.get(p, ['performance', lang + '-town'], '')
+                                                            span.town= op.get(p, ['performance', lang + '-town'], '')
+
+                                                        span.name= op.get(p, lang + '-name')
+
+                                        .col-xs-6.col-md-2.col-lg-2
+                                            if op.get(p, [lang + '-location'], false)
+                                                p.location= op.get(p, [lang + '-location'])
+
+                                            if op.get(p, ['saal-location', lang + '-name'])
+                                                p.location= op.get(p, ['saal-location', lang + '-name'])
+
+                                            if op.get(p, 'price') == 0
+                                                p= t('title.free')
+                                            else
+                                                p= op.get(p, 'price')
+
+                                            if op.get(p, 'min-price')
+                                                if op.get(p, 'min-price') == op.get(p, 'max-price')
+                                                    p= op.get(p, 'min-price') + '€'
+                                                else
+                                                    p= op.get(p, 'min-price') + '/' + op.get(p, 'max-price') + '€'
+
+                                        .col-xs-6.col-md-2.text-right
+                                            if op.get(p, 'sales-status')
+                                                if op.get(p, 'canceled') === true
+                                                    a.btn.btn-primary(class="disabled")= t('button.canceled')
+                                                else
+                                                    a.btn.btn-primary(class=((op.get(p, 'sales-status') === 'sold_out' || op.get(p, 'sales-status') === 'free_admission') ? "free disabled" : "") href=op.get(p, lang + '-ticket-api') target='_blank')= t('button.buy_ticket.' + op.get(p, 'sales-status'))
+
+                                        .col-xs-12.col-md-12.col-lg-12
+                                            hr
+
+                        if Object.keys(tours).length > listlength
+                            .col-xs-12.col-md-12
+                                a.load-more.btn.btn-primary(href='/' + lang + '/tours/')= t('button.view-all')
+
+
+                if Object.keys(residencies).length > 0
+                    .tour.row
+                        .col-xs-12.col-md-12
+                            h2= t('nav.residency')
+                        each datestring in Object.keys(residencies).sort().slice(0, listlength)
+                            each timestring in Object.keys(op.get(residencies, [datestring])).sort()
+                                each p in op.get(residencies, [datestring, timestring])
+                                    .col-xs-12.col-sm-2.col-lg-2
+                                        p= (moment(op.get(p,['start-time'])).locale('et').format('L')) + "—" + moment(op.get(p,['end-time'])).locale('et').format('L')
+
+                                    .col-xs-12.col-md-6.col-lg-6
+                                        h3
+                                            a(href='/' + lang + '/resident/' + op.get(p,'id'))
+                                                //- if op.get(p, lang + '-subtitle', '')
+                                                //-     span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                                if op.get(p, 'resident', false)
+                                                    span.artist= op.get(p, 'resident', []).join(', ')
+
+                                                if op.get(p, lang + '-name')
+                                                    span.name= op.get(p, lang + '-name')
+
+                                    .col-xs-12.col-md-4.col-lg-4
+                                        if op.get(p, [lang + '-location'], false)
+                                            p.location= op.get(p, [lang + '-location'])
+
+                                        if op.get(p, ['saal-location', lang + '-name'])
+                                            p.location= op.get(p, ['saal-location', lang + '-name'])
+
+                                    .col-xs-12.col-md-12
+                                        hr
+
+                        if Object.keys(residencies).length > listlength
+                            .col-xs-12.col-md-12
+                                a.load-more.btn.btn-primary(href='/' + lang + '/residency/')= t('button.view-all')
+
+
+            aside.col-xs-12.col-md-12.col-lg-3.sidebar
+                .row
+                    // .banner.col-xs-12.col-sm-6.col-md-4.col-lg-12
+                    //     a.text-center.h3.volunteer(href='https://saal.ee/et/festival/5663/program')= t('button.LATEST')
+
+                    // .banner.col-xs-12.col-sm-6.col-md-4.col-lg-12
+                    //     a.text-center.h3.volunteer(href='https://saal.entu.ee/api2/file-6611')= t('button.NUPprint')
+
+                    .hidden-xs.col-sm-6.col-md-4.col-lg-12.datepicker-container
+                        h2= t('title.calendar')
+                        div(id='datepicker')
+                        ul.list-inline.legend
+                            li.event= t('title.event')
+                            li.tour= t('title.tour')
+
+                    .banner.col-xs-12.col-sm-6.col-md-4.col-lg-12
+                        a.text-center.h3.volunteer(href='contact#covid')= t('button.covid_info')
+                    .banner.col-xs-12.col-sm-6.col-md-4.col-lg-12
+                        a.text-center.h3.volunteer(href='mailto:vabatahtlik@saal.ee')= t('button.volunteer')
+
+                        if sideBanner
+                            a(href=sideBanner.url)
+                                img(src=op.get(sideBanner, ['photos', 0, 'file']), alt=sideBanner.name, class="img-responsive img-center front-banner")
+
+                    .col-xs-12.col-sm-12.col-md-4.col-lg-12(id='newsletter-sign-up')
+                        p= t('newsletter.signup')
+                    .col-xs-12.col-sm-12.col-md-4.col-lg-12(id='mailchimp-sign-up')
+                        form.validate(action=t('newsletter.mailchimp.action') method='post' id='mc-embedded-subscribe-form' name='mc-embedded-subscribe-form' class='validate' target='_blank' novalidate)
+                            .mc-field-group
+                                input.required.email(type='text' value='' name='EMAIL' placeholder=t('newsletter.placeholder') id='mce-EMAIL')
+                            .clear(id='mce-responses')
+                                .response(id='mce-error-response' style='display:none')
+                                .response(id='mce-success-response' style='display:none')
+                            div(style='position: absolute; left: -5000px;')
+                                input(type='text' name=t('newsletter.mailchimp.inputName') tabindex='-1' value='')
+                            .clear
+                                input.button(type='submit' value='OK!' name='subscribe' id='mc-embedded-subscribe')
+
+
+                        //- .site-search
+                        //-     form(action='search')
+                        //-         input(type='text' name='q' id='search' placeholder=t('placeholder.search') value=(q?q:''))
+                        //-         button.icon-search.h4(type='submit')

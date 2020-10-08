@@ -1,0 +1,95 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+        .row.page-margin
+            section.col-xs-12.col-md-12.col-lg-12
+
+                .programme.row
+
+                    case results.query_type
+                        when 'query'
+                            .col-xs-12.col-md-12.col-lg-12
+                                if results.count == 0
+                                    h2= t('q.query') + ': ' + results.query + ' • ' + t('q.results.0')
+                                else if results.count == 1
+                                    h2= t('q.query') + ': ' + results.query + ' • ' + t('q.results.1')
+                                else
+                                    h2= t('q.query') + ': ' + results.query + ' • ' + t('q.results') + ' ' + (results.count)
+                        when 'category'
+                            .col-xs-12.col-md-12.col-lg-12
+                                if results.performances.length == 0
+                                    h2= t('q.query') + ': ' + results.query_category + ' • ' + t('q.results.0')
+                                else if results.performances.length == 1
+                                    h2= t('q.query') + ': ' + results.query_category + ' • ' + t('q.results.1')
+                                else
+                                    h2= t('q.query') + ': ' + results.query_category + ' • ' + t('q.results') + ' ' + (results.performances.length)
+                        when 'date'
+                            .col-xs-12.col-md-12.col-lg-12
+                                if results.length == 0
+                                    h2= t('q.query') + ': ' + results.query_date + ' • ' + t('q.results.0')
+                                else if results.length == 1
+                                    h2= t('q.query') + ': ' + results.query_date + ' • ' + t('q.results.1')
+                                else
+                                    h2= t('q.query') + ': ' + results.query_date + ' • ' + t('q.results') + ' ' + (results.events.length)
+                        when 'person'
+                            .col-xs-12.col-md-12.col-lg-12
+                                if results.length == 0
+                                    h2= t('q.query') + ': ' + results.query_person + ' • ' + t('q.results.0')
+                                else if results.length == 1
+                                    h2= t('q.query') + ': ' + results.query_person + ' • ' + t('q.results.1')
+                                else
+                                    h2= t('q.query') + ': ' + results.query_person + ' • ' + t('q.results') + ' ' + (results.fuse_js.length)
+                        when 'giphy'
+                            .col-xs-12.col-md-12.col-lg-12
+                                if results.giphy.pagination.total_count == 0
+                                    h2= t('q.query') + ': ' + results.query_giphy + ' • ' + t('q.results.0')
+                                else if results.giphy.pagination.total_count == 1
+                                    h2= t('q.query') + ': ' + results.query_giphy + ' • ' + t('q.results.1')
+                                else
+                                    h2= t('q.query') + ': ' + results.query_giphy + ' • ' + t('q.results') + ' ' + (results.giphy.pagination.total_count)
+
+                    case results.query_type
+                        when 'query'
+                            .col-xs-12.col-md-12.col-lg-12
+                                each performance in op.get(results, ['performances'], [])
+                                    h3
+                                        //- p= op.get(performance, ['id'])
+                                        a(href='/' + lang + '/performance/' + op.get(performance, ['id']) + '?q=' + results.query)!= op.get(performance, [lang + '-name'])
+                                    hr
+                                //- hr
+                                each event in op.get(results, ['events'], [])
+                                    h3
+                                        //- p= op.get(event, ['id']) + '|' + op.get(event, ['performance', 'id'])
+                                        a(href='/' + lang + '/performance/' + op.get(event, ['id']) + '?q=' + results.query)!= op.get(event, [lang + '-name'])
+                                    hr
+                        when 'category'
+                            .col-xs-12.col-md-12.col-lg-12
+                                each performance in op.get(results, 'performances', [])
+                                    h3
+                                        a(href='/' + lang + '/performance/' + op.get(performance,'id'))= op.get(performance, [lang + '-name'])
+                                    hr
+                        when 'date'
+                            .col-xs-12.col-md-12.col-lg-12
+                                each event in op.get(results, 'events', [])
+                                    p= t('weekdays.' + new Date(q_date).getDay()) + ', ' + (moment(q_date).locale(lang).format('L'))
+                                    h3
+                                        a(href='/' + lang + '/event/' + event.id)!= op.get(event, 'category.' + [lang + '-name'])
+                                    hr
+                        when 'person'
+                            .col-xs-12.col-md-12.col-lg-12
+                                each person in op.get(results, 'fuse_js', [])
+                                    if op.get(person, 'score') < 0.6
+                                        div(score=op.get(person, 'score'), style='clear:both;')
+                                            a(href='https://saal.entu.ee/entity/person/' + op.get(person, 'item.id'))
+                                                h3= op.get(person, 'item.name')
+                                                p= op.get(person, 'item.email')
+                                                p= op.get(person, 'item.phone')
+                        when 'giphy'
+                            .col-xs-12.col-md-12.col-lg-12
+                                each giphy in op.get(results, 'giphy.data', [])
+                                    div(style='clear:both;')
+                                        img(src=op.get(giphy, 'images.fixed_height.url'), style='float:left;')

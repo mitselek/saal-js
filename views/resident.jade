@@ -1,0 +1,75 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+
+        .row
+            .event-banner.carousel.slide(id='front-carousel' data-ride='carousel')
+                .carousel-inner(role='listbox')
+                    if op.get(event, 'photo.file')
+                        figure(id='slide-'+op.get(event, 'id')+'' style='background-image: url(' + op.get(event, 'photo.file') + ');')
+                    else
+                        figure(id='slide-'+op.get(event, 'id')+'' style='background-image:url("/images/placeholder.jpg");')
+                    header.col-md-8
+                        p= (moment(op.get(event,['start-time'])).locale('et').format('L')) + "—" + moment(op.get(event,['end-time'])).locale('et').format('L')
+                        
+                        h1
+                            if op.get(event, lang + '-subtitle', '')
+                                span.name= op.get(event, lang + '-subtitle', '')
+                                
+                            if op.get(event, 'resident', false)
+                                span.artist= op.get(event, 'resident', []).join(', ')
+                                
+                            if op.get(event, lang + '-name')
+                                span.name= op.get(event, lang + '-name')
+
+                    ul.event-categories
+                        each rootCategory in rootCategories
+                            li.text-uppercase.h3(class=(rootCategory.checked ? "" : "unactive"))
+                                span
+                                    a(href='search?q=category:' + op.get(rootCategory, ['id'], t('Jon Doe')))= op.get(rootCategory, [lang+'-name'], t('Jon Doe'))
+
+                    script.
+                        var slide#{id} = document.getElementById('slide-#{id}');
+                        var gradientMap = '#{SAAL.secondary_color}, #{SAAL.main_color}';
+
+                        GradientMaps.applyGradientMap(slide#{id}, gradientMap);       
+
+        .row.front-page-margin
+            article.main-text.col-md-12.col-lg-12.h3!= op.get(event, lang + '-description')
+        
+        .row.front-page-margin
+            .col-md-6
+                //- if op.get(event, 'audio')
+                //-     div.col-xs-12.col-md-6
+                //-         h2= t('title.sound')
+                //-         div!= op.get(event, 'audio')
+                //-         
+                //- if op.get(event, 'video')
+                //-     div.col-xs-12.col-md-6
+                //-         h2= t('title.video')
+                //-         div!= op.get(event, 'video')
+                //- 
+                //- hr
+                if op.get(event, 'video')
+                    .gallery
+                        h2= t('title.video')
+                            each video in op.get(event, 'videos')
+                                div!= video
+                if op.get(event, 'audio')
+                    .gallery
+                        h2= t('title.audio')
+                            each audio in op.get(event, 'audios')
+                                div!= audio
+
+                if op.get(event, ['photos'])
+                    .gallery
+                        h2= t('title.gallery')
+                        .row
+                            each photo in op.get(event, ['photos'], [])
+                                .single-image.col-xs-6.col-sm-3.col-md-4
+                                    a.fancybox(rel='gallery', href=op.get(photo, ['big', 'file'], op.get(photo, ['medium', 'file'], '/images/placeholder.jpg')) )
+                                        img(src=op.get(photo, ['medium', 'file'], '/images/placeholder.jpg'), class='img-responsive')

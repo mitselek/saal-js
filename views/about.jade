@@ -1,0 +1,76 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+        .row.page-margin
+            section.col-md-6
+                h2= t('title.saal')
+
+                .carousel.slide(id='about-carousel' data-ride='carousel')
+                    .carousel-inner(role='listbox')
+                        - var isActive = 0
+                        each image in op.get(SDC.get(['root', 'gallery'], []))
+                            img( class=(isActive++ === 0 ? 'img-responsive item active' : 'img-responsive item'), src=op.get(image, ['file']), alt=op.get(image, 'name') )
+                    
+                    a.left.carousel-control(href='#about-carousel' role='button' data-slide='prev')
+                        span.icon-prev.arrow-left(aria-hidden='true')
+                    a.right.carousel-control(href='#about-carousel' role='button' data-slide='next')
+                        span.icon-next.arrow-right(aria-hidden='true')
+
+                article.main-text.h3
+                    p!= SDC.get(['root', lang + '-description'])
+            
+                .floorplans
+                    h2= t('title.floorplans')
+                    ul.list-unstyled.h3
+                        each location in locations
+                            each floorplan in op.get(location, ['floorplan'], [])
+                                li
+                                    a(href=floorplan.file target='_blank')
+                                        u= op.get(location, [lang+'-name'])
+                                    //- span &nbsp;|&nbsp;
+                                    span= ' | ' + op.get(location, [lang+'-description'])
+                
+                .old-www
+                    h2= t('title.archive')
+                    ul.list-unstyled.h3
+                        li
+                            a(href='http://2016.saal.ee/events/2016/01/' target='_blank') www.saal.ee 2008–2015
+                        li
+                            a(href='http://2016.saal.ee/archive/' + lang + '/programm2/arhiiv.html' target='_blank') www.saal.ee 2004–2008
+
+            section.news.col-md-6
+                if Object.keys(news).length
+                    h2= t('title.news')
+
+                    .panel-group(id='accordion' role='tablist' multiselectable='true')
+
+                        - var indexCollapse = 0
+                        - var indexIn = 0
+                        each datestring in Object.keys(news)
+                            each p in op.get(news, [datestring])
+                                if op.get(p, lang + '-title', false)
+                                    .panel
+                                        div(role="tab" id="heading-"+op.get(p, 'id')+"")
+                                            h3
+                                                a(class=(++indexCollapse === 1 ? '' : 'collapsed') data-toggle="collapse" data-parent="#accordion" href="#collapse-"+op.get(p, 'id')+"" aria-expanded="true" aria-controls="collapse-"+op.get(p, 'id')+"")= op.get(p, lang + '-title')
+
+                                        .panel-collapse.collapse(class=(++indexIn === 1 ? 'in' : ' ') id="collapse-"+op.get(p, 'id')+"" role="tabpanel" aria-labelledby="heading-"+op.get(p, 'id')+"")
+                                            div
+                                                p!= op.get(p, lang + '-body')
+
+                    //- .row
+                    //-     .col-xs-12.col-md-12
+                    //-         a.load-more.btn.btn-primary(href='/' + lang + '/news/')= t('button.view-all')
+
+    .row.page-margin
+        .supporter.col-md-12
+            h2= t('title.sponsors')
+            ul.list-inline
+                each supporter in op.get(supporters, ['small', 'banners'], [])
+                    li
+                        a(href=op.get(supporter, 'url') target='_blank')
+                            img(src=op.get(supporter, ['photos', 0, 'file']), alt=op.get(supporter, 'name'), class='img-responsive')

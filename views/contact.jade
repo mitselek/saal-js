@@ -1,0 +1,56 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+        .row.page-margin
+            section.col-xs-12.col-sm-12.col-md-12.col-lg-12
+                h2= t('title.contact')
+            section.col-md-6
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2028.6715343970304!2d24.745978300000008!3d59.43855259999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4692936235ed6985%3A0x86e790e483c15838!2sKanuti+Gildi+Saal!5e0!3m2!1sen!2see!4v1442397004784" width="100%" height="500" frameborder="0" style="border:0" allowfullscreen></iframe>
+
+            article.col-md-6.address
+                .row
+                    article.col-xs-12.col-sm-12.col-md-12.col-lg-12.location
+                        p Pikk 20, 10133 
+                        p Tallinn, Estonia
+                        p tel: +372 64 64 704
+                        p
+                            a(href='mailto:saal@saal.ee') saal@saal.ee
+
+                .row.team.grid-row
+                    each user in users
+                        .col-xs-12.col-sm-4.col-md-4.col-lg-4.member
+                            h2= op.get(user, 'name')
+                            p= op.get(user, 'occupation')
+                            a(href="mailto:" + op.get(user, 'email') + "")= op.get(user, 'email')
+                            p= op.get(user, 'phone')
+
+            article.col-md-12.council
+                .row
+                    article.col-xs-12.col-sm-12.col-md-12.col-lg-12.location
+                        h2= t('contact.council.title')
+                        p Eero Epner, Marten Esko, Jaan Evart, Eneli Järs, Maarja Kalmre, Kaie Küünal, Kaie Olmre, Sille Pihlak, Priit Raud, Annika Üprus
+
+            article.col-md-12.covid
+                .row
+                    article.col-xs-12.col-sm-12.col-md-12.col-lg-12.location
+                        h2#covid Koroona meelespea 
+                        h3
+                            u 
+                                a(href="https://docs.google.com/forms/d/e/1FAIpQLSeyUfAKnQXZkIA4BBTLhthzbxc6zXXUsUBLEOgMcvtLbR0gfQ/viewform?fbclid=IwAR3-cvNroYGhUFqtAW6jvWLFwjcZZ0aRcYYD3SR04o1LkeOiFZxS7Z5aaUI") Registreeri oma külastus
+                        div Kanuti Gildi SAALi jaoks on meie vaatajate, kunstnike ja meeskonna liikmete tervis, ohutus ja heaolu tähtis ja prioriteetne. Selle nimel oleme panustanud ning panustame ka tulevikus, jälgides muutuvaid piiranguid, ettekirjutisi ja tervet mõistust.
+                        div Allpool mõned tegevused mida teiega koos tehes muudame külaskäigu teatrisse ohutumaks: 
+                            ul
+                                li Kui oled haigestunud või tunned end halvasti, palun jää koju. Me jätame endale õiguse nähtavate ja kuuldavate haigustunnustega inimesi saali mitte lasta.
+                                li Pileti vahetamiseks või tagasiostuks võta palun meiega ühendust telefoni teel või e-posti vahendusel esimesel võimalusel, aga hiljemalt kaks tundi enne etenduse algust.
+                                li Hooaja algusest peale oleme täitnud 50% reeglit, mahutades saali vaid poole tavapärasest publikuhulgast. Nii on inimestel kindlam ja ohutum ning kõigil paremad võimalused hoida distantsi.
+                                li Enne iga avalikku üritust desinfitseerime kõik üldkasutatavad pinnad. Publikualale oleme paigutanud käte desinfitseerimisvahendid. Palun kasuta neid. Kuigi maski kandmise kohustust ei ole, saab meilt osta ühekordseks kasutuseks mõeldud ning eraldi pakendatud meditsiinilise maski.
+                                li
+                                    | Palume saalisviibijatel 
+                                    b
+                                        a(href="https://bit.ly/30oGZ0i") registreerida oma külastus 
+                                    | meie koduleheküljel. Vormi täitmine on vabatahtlik ja võimalik ka etendusejärgselt 2 nädala jooksul. Kui sa soovid end registreerida kohapeal siis anna sellest teda ning me võimaldame seda. Kasutame andmeid, et koostöös Terviseametiga tuvastada kontaktsed ja teavitada neid nakkusohust juhul, kui selgub, et saalis on viibinud viirusekandja. Andmeid hoitakse parooliga kaitstud andmebaasis ning hävitatakse 1 kuu möödudes.
+                                li Palume teatrisse tulla aegsasti, et vältida tihedaid järjekordi. Uksed avame pool tundi enne etenduse algust. 

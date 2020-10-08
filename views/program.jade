@@ -1,0 +1,153 @@
+extends layout
+
+block vars
+
+block content
+
+    .container-fluid
+        .row.page-margin
+
+            nav.archive.top.col-md-12
+                .row
+                    .col-xs-12.col-sm-10.col-md-10.col-lg-11.select-cat 
+                        each cat in all_categories
+                            if categories.indexOf(cat.id) === -1
+                                a(href='program/'+monthNav.current.year+'/'+monthNav.current.month+'/'+categories.join(',') + ',' + cat.id)
+                                    = op.get(cat, ['properties', lang + '-name', 0, 'value'])
+                                    span.icon-checkmark2
+                            else
+                                a(href='program/'+monthNav.current.year+'/'+monthNav.current.month+'/'+arraySubtract(categories, cat.id).join(','))
+                                    .active= op.get(cat, ['properties', lang + '-name', 0, 'value'])
+                                        span.icon-checkmark
+
+                .row
+                    .col-sm-12.col-md-12.col-lg-12
+                        ul.pager
+                            if monthNav.prev.year > 2015
+                                li.previous
+                                    a(href = 'program/' + monthNav.prev.year + '/' + monthNav.prev.month + '/' + categories.join(','))
+                                        span= '← ' + t('month.' + monthNav.prev.month) + ' ' + monthNav.prev.year
+                            if monthNav.next.year < maxDate.getUTCFullYear() || ( monthNav.next.year === maxDate.getUTCFullYear() && monthNav.next.month <= (maxDate.getUTCMonth() + 1))
+                                li.next
+                                    a(href = 'program/' + monthNav.next.year + '/' + monthNav.next.month + '/' + categories.join(','))
+                                        span= t('month.' + monthNav.next.month) + ' ' + monthNav.next.year + ' →'
+
+            .col-md-12
+                .programme.row
+                    .col-xs-12.col-md-12.col-lg-12
+                        h2= monthNav.current.year + ' ' + t('month.' + monthNav.current.month)
+
+                    if program
+                        each datestring in Object.keys(program).sort()
+                            each timestring in Object.keys(op.get(program, [datestring])).sort()
+                                each p in op.get(program, [datestring, timestring])
+                                    .col-xs-12.col-sm-2.col-lg-2
+                                        p= (moment(datestring).locale(lang).format('dddd'))
+                                        p= (moment(datestring).locale(lang).format('L'))
+                                        if timestring != '23:59'
+                                            p= timestring
+
+                                        if op.get(p, 'canceled') === true
+                                            p.today= t('button.canceled')
+
+                                        //- Premiere
+                                        if op.get(p, 'performance.premiere.start-time')
+                                            if (moment(datestring).locale(lang).format('L') === moment(op.get(p, 'performance.premiere.start-time')).locale(lang).format('L'))
+                                                p.today= t('button.premiere')
+
+                                        //- Today
+                                        if (moment(datestring).format('M') + ' ' + moment(datestring).format('D')) == ((moment().month()+1) + ' ' + moment().date())
+                                            p.today= t('button.today')
+
+                                        //- Artist Talk
+                                        if (op.get(p,['talk'], false) === true)
+                                            p.today= t('button.artist-talk')
+
+                                    .col-xs-12.col-md-6.col-lg-6
+                                        h3
+                                            if op.get(p, ['performance', 'id'], false)
+                                                a(href='/' + lang + '/performance/' + op.get(p,['performance', 'id']))
+                                                    //- Festival
+                                                    //- if (op.get(p,['tag']).includes('festival'))
+                                                    //-     span.subtitle= t('button.festival')
+
+                                                    if op.get(p, [lang + '-supertitle'], false)
+                                                        span.subtitle= op.get(p, [lang + '-supertitle'], 'foo')
+                                                    
+                                                    if op.get(p, ['performance', 'artist'], false)    
+                                                        span.artist= op.get(p, ['performance', 'artist'])
+                                                    
+                                                    if op.get(p, ['performance', 'producer'], false)
+                                                        span.producer= op.get(p, ['performance', 'producer'])
+                                                    
+                                                    if op.get(p, ['performance', lang + '-town'], false)
+                                                        span.town= op.get(p, ['performance', lang + '-town'])
+                                                    
+                                                    span.name= op.get(p, [lang + '-name'])
+                                                    
+                                                    if op.get(p, [lang + '-subtitle'], false)
+                                                        span.subtitle= op.get(p, [lang + '-subtitle'])
+
+                                            else
+                                                a(href='/' + lang + '/event/' + op.get(p,'id'))= op.get(p, lang + '-name')
+                                                    if op.get(p, lang + '-supertitle', '')
+                                                        span.subtitle= op.get(p, lang + '-supertitle', '')
+                                                    
+                                                    if op.get(p, 'performance.artist', '')    
+                                                        span.artist= op.get(p, 'performance.artist', '')
+                                                    
+                                                    if op.get(p, 'performance.producer', '')    
+                                                        span.producer= op.get(p, 'performance.producer', '')
+                                                    
+                                                    if op.get(p, ['performance', lang + '-town'], '')
+                                                        span.town= op.get(p, ['performance', lang + '-town'], '')
+                                                    
+                                                    span.name= op.get(p, lang + '-name')
+                                                    
+                                                    if op.get(p, lang + '-subtitle', '')
+                                                        span.subtitle= op.get(p, lang + '-subtitle', '')
+
+                                    .col-xs-6.col-md-2.col-lg-2
+                                        if op.get(p, [lang + '-location'], false) || op.get(p, ['saal-location', lang + '-name'], false)
+                                            p.location= op.get(p, ['saal-location', lang + '-name'], op.get(p, [lang + '-location']))
+                                        
+                                        if op.get(p, 'price') === 0
+                                            p= t('title.free')
+                                        else
+                                            p= op.get(p, 'price')
+
+                                        if op.get(p, 'min-price')
+                                            if op.get(p, 'min-price') === op.get(p, 'max-price')
+                                                p= op.get(p, 'min-price')
+                                            else
+                                                p= op.get(p, 'min-price') + '/' + op.get(p, 'max-price')
+                                        
+                                        if op.get(p, 'onsite-price')
+                                            p= t('title.onsite-price') + ': ' + op.get(p, 'onsite-price')
+
+                                    if op.get(p, 'sales-status')
+                                        if (new Date(datestring + ' ' + timestring) > new Date())
+                                            .col-xs-6.col-md-2.col-lg-2.text-right
+                                                if op.get(p, 'canceled') === true
+                                                    a.btn.btn-primary(class="disabled")= t('button.canceled')
+                                                else
+                                                    a.btn.btn-primary(class=((op.get(p, 'sales-status') === 'sold_out' || op.get(p, 'sales-status') === 'free_admission') ? "free disabled" : "") href=op.get(p, lang + '-ticket-api') target='_blank')= t('button.buy_ticket.' + op.get(p, 'sales-status'))
+
+                                    .col-xs-12.col-md-12.col-lg-12
+                                        hr
+                    else
+                        .col-lg-12
+                            h2= t('title.no-events')
+
+            nav.archive.bottom.col-md-12
+                .row
+                    .col-sm-12.col-md-12.col-lg-12
+                        ul.pager
+                            if monthNav.prev.year > 2015
+                                li.previous
+                                    a(href = 'program/' + monthNav.prev.year + '/' + monthNav.prev.month + '/' + categories.join(','))
+                                        span= '← ' + t('month.' + monthNav.prev.month) + ' ' + monthNav.prev.year
+                            if monthNav.next.year < maxDate.getUTCFullYear() || ( monthNav.next.year === maxDate.getUTCFullYear() && monthNav.next.month <= maxDate.getUTCMonth())
+                                li.next
+                                    a(href = 'program/' + monthNav.next.year + '/' + monthNav.next.month + '/' + categories.join(','))
+                                        span= t('month.' + monthNav.next.month) + ' ' + monthNav.next.year + ' →'
