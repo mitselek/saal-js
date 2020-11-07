@@ -23,24 +23,34 @@ SDC = op({
 })
 
 var cacheFromEntu = [
-  {'parent':'3808', 'definition': 'category',    'class': 'rootCategory'},
-  {'parent':'1930', 'definition': 'event',       'class': 'festival'},
-  {'parent':'1930', 'definition': 'performance', 'class': 'festival'},
-  {'parent':'597',  'definition': 'event',       'class': 'program'},
-  {'parent':'4054', 'definition': 'event',       'class': 'program'},
-  {'parent':'1931', 'definition': 'event',       'class': 'residency'},
-  {'parent':'1929', 'definition': 'event',       'class': 'tour'},
-  {'parent':'1953', 'definition': 'news',        'class': 'news'},
+  {'parent':'3808', 'definition': 'category',    'class': 'rootCategory'}, // 7tk
+  {'parent':'1930', 'definition': 'event',       'class': 'festival'}, // 8tk
+  {'parent':'1930', 'definition': 'performance', 'class': 'festival'}, // 5tk
+  {'parent':'4054', 'definition': 'event',       'class': 'program'}, // 36tk
+  {'parent':'1931', 'definition': 'event',       'class': 'residency'}, // 34tk
+  {'parent':'1929', 'definition': 'event',       'class': 'tour'}, // 295tk
+  
+  {'parent':'1953', 'definition': 'news',        'class': 'news'}, // 
+  {'parent':'6832',  'definition': 'event',       'class': 'program'}, // 149tk
+  {'parent':'6831',  'definition': 'event',       'class': 'program'}, // 283tk
+  {'parent':'6830',  'definition': 'event',       'class': 'program'}, // 279tk
+  {'parent':'597',  'definition': 'event',       'class': 'program'}, // 230tk
+  
   // {'parent':'1933', 'definition': 'coverage',    'class': 'coverage'}, // nu performance 2016
   {'parent':'4054', 'definition': 'coverage',    'class': 'coverage'}, // SB 2017
   {'parent':'4051', 'definition': 'person',      'class': 'team'},
-  {'parent':'1935', 'definition': 'performance', 'class': 'performance'},
+  
+  {'parent':'1935', 'definition': 'performance', 'class': 'performance'}, // 58
+  {'parent':'6842', 'definition': 'performance', 'class': 'performance'}, // 5
+  {'parent':'6833', 'definition': 'performance', 'class': 'performance'}, // 350
+
   {'parent':'2109', 'definition': 'location',    'class': 'location'},
   {'parent':'2107', 'definition': 'event',       'class': 'project'},
   {'parent':'1',    'definition': 'banner',      'class': 'supporters'},
   {'parent':'2786', 'definition': 'banner-type', 'class': 'banner types'},
-  {'parent':'4024', 'definition': 'echo',        'class': 'echo'},
-  {'parent':'4024', 'definition': 'category',    'class': 'echoCategory'},
+  {'parent':'4024', 'definition': 'echo',        'class': 'echo'}, // 113tk
+  {'parent':'4024', 'definition': 'category',    'class': 'echoCategory'}, // 0 tk
+  // {'parent':'6836', 'definition': 'echo',        'class': 'echo'}, katkised artiklid
 ]
 
 // var tempLocalEntities = {}
@@ -322,7 +332,10 @@ function myProcessEntities(parentEid, eClass, definition, entities, callback) {
 
   if (entities.length === 0) { return callback() }
   debug('Processing ' + entities.length + ' entities (' + eClass + '|' + definition + ').')
+  let _ecnt = 0
   async.eachLimit(entities, 1, function(opEntity, callback) {
+    _ecnt ++
+    debug(`__________ ${_ecnt}: eid ${opEntity.get('id')} entity (${eClass}|${definition}).`)
     if (opEntity.get(['properties', 'nopublish', 0, 'value']) === 'True') {
       // debug('callback [003] in 0.2')
       setTimeout(function () {
@@ -397,13 +410,13 @@ cacheSeries.push(function fetchFromEntu(callback) {
   async.eachLimit(cacheFromEntu, 1, function(options, callback) {
     var definition = options.definition
     var eClass = options.class
-    // debug('Fetch1 ' + JSON.stringify(options) + ' from Entu.')
+    debug('Fetch1 ' + JSON.stringify(options) + ' from Entu.')
     if (options.parent) {
       var parentEid = options.parent
-      // debug('Fetch2 ' + definition + '@' + parentEid + ' from Entu.')
+      debug(`Fetch2 ${definition}@${parentEid} from Entu.`)
       entu.getChilds(parentEid, definition, APP_ENTU_OPTIONS)
       .then(function(opEntities) {
-        // debug('Fetch2 ' + definition + '@' + parentEid + ' from Entu succeeded.')
+        debug('Fetch2 ' + definition + '@' + parentEid + ' from Entu succeeded.')
         myProcessEntities(parentEid, eClass, definition, opEntities, callback)
       })
       .catch(function(reason) {
