@@ -485,19 +485,27 @@ contact:
             link:
                 en: https://docs.google.com/forms/d/e/1FAIpQLSeyUfAKnQXZkIA4BBTLhthzbxc6zXXUsUBLEOgMcvtLbR0gfQ/viewform?fbclid=IwAR3-cvNroYGhUFqtAW6jvWLFwjcZZ0aRcYYD3SR04o1LkeOiFZxS7Z5aaUI
                 et: https://docs.google.com/forms/d/e/1FAIpQLSeyUfAKnQXZkIA4BBTLhthzbxc6zXXUsUBLEOgMcvtLbR0gfQ/viewform?fbclid=IwAR3-cvNroYGhUFqtAW6jvWLFwjcZZ0aRcYYD3SR04o1LkeOiFZxS7Z5aaUI
+        hoia:
+            en: https://hoia.me/en
+            et: https://hoia.me
+        gethoia:
+            en: 'Get the app here'
+            et: 'Laadi HOIA äpp siit'
         lead:
             en: > 
                 For Kanuti Gildi SAAL the health, safety and wellbeing of our visitors, artists and team is a priority. We have and will put effort in this in the future, keeping track on changing rules and regulations as well as sanity.
+                
                 Below here are some activities to follow to make the theatre visit more safe:
             et: >
                 Kanuti Gildi SAALi jaoks on meie vaatajate, kunstnike ja meeskonna liikmete tervis, ohutus ja heaolu tähtis ja prioriteetne. Selle nimel oleme panustanud ning panustame ka tulevikus, jälgides muutuvaid piiranguid, ettekirjutisi ja tervet mõistust.
+                
                 Allpool mõned tegevused mida teiega koos tehes muudame külaskäigu teatrisse ohutumaks:
         points:
             1:   
                 en: If you are sick or don't feel well, please stay at home. We reserve the right to not to let a person with visible and audible symptoms of disease to enter the venue. 
                 et: Kui oled haigestunud või tunned end halvasti, palun jää koju. Me jätame endale õiguse nähtavate ja kuuldavate haigustunnustega inimesi saali mitte lasta.
             2:   
-                en: To change or return the ticket please contact us via phone or e-mail as soon as possible, latest 2 hours prior to the start of the performance. 
+                en: To change or return the ticket please contact us via phone or e-mail as soon as possible, latest 2 hours prior to the start of the performance.
                 et: Pileti vahetamiseks või tagasiostuks võta palun meiega ühendust telefoni teel või e-posti vahendusel esimesel võimalusel, aga mitte hiljem kui kaks tundi enne etenduse algust.
             3:   
                 en: From the beginning of this season we have followed the 50% rule, having half the amount of maximum audience capacity. It is more safe and allows people to keep distance if needed.
@@ -506,8 +514,15 @@ contact:
                 en: Before every event we disinfect all commonly used surfaces. There are hand sanitizers available for the audience all over our venue. Please use them.
                 et: Enne iga avalikku üritust desinfitseerime kõik üldkasutatavad pinnad. Publikualale oleme paigutanud käte desinfitseerimisvahendid. Palun kasuta neid.
             5:   
-                en: It is obligatory to wear a mask. You can buy a packed medical one-time-use mask at the door.
-                et: Valitsuse otsusega on teatris alates 16. novembrist kohustuslik kanda maski. Meilt saab osta ühekordseks kasutuseks mõeldud ning eraldi pakendatud meditsiinilise maski.
+                en: Kanuti Gildi SAAL wears a mask. You can buy a packed medical one-time-use mask at the door.
+                et: Kanuti Gildi SAAL kannab maski. Meilt saab osta ühekordseks kasutuseks mõeldud ning eraldi pakendatud meditsiinilise maski.
             6:   
                 en: We kindly ask all audience members to register your visit on our website. Filling the form is voluntary and it is possible to fill it until 1 week after the event. If you wish to register yourself on spot please let us know and we will provide this option. We use the data in collaboration with Health Board to identify and contact visitors in case there appears a possible risk of infection and virus carrier has been at the event. Contacts are being held in a safe database and will be deleted after a month.
                 et: Palume saalisviibijatel registreerida oma külastus meie koduleheküljel. Vormi täitmine on vabatahtlik ja võimalik ka etendusejärgselt 1 nädala jooksul. Kui sa soovid end registreerida kohapeal, siis anna sellest teda ning me võimaldame seda. Kasutame andmeid, et koostöös Terviseametiga tuvastada kontaktsed ja teavitada neid nakkusohust juhul, kui selgub, et saalis on viibinud viirusekandja. Andmeid hoitakse parooliga kaitstud andmebaasis ning need hävitatakse 1 kuu möödudes.
+            7:
+                en: Please arrive to the theatre in advance and well in time to avoid tight queues. We open the doors 30 minutes before the performance starts.
+                et: Palume teatrisse tulla aegsasti, et vältida tihedaid järjekordi. Uksed avame pool tundi enne etenduse algust.
+            8:
+                en: Please download HOIA mobile app, so you can quickly find out about possible close contact with a COVID-19 infected person, allowing you to take steps to protect your own health and the health of others.
+                et: Soovitame enne teatrisse tulekut endale alla laadida HOIA mobiilirakenduse, mille abil saab kiiresti ning anonüümselt teada võimalikust lähikontaktist COVID-19 nakatunuga.
+
